@@ -1,8 +1,8 @@
 package yunexpress
 
 import (
-	"encoding/json"
 	"fmt"
+	"github.com/bytedance/sonic"
 	"github.com/go-resty/resty/v2"
 	"github.com/zengweigg/yunexpress/config"
 	"net/http"
@@ -51,7 +51,7 @@ func NewYWService(cfg config.Config) *YWClient {
 	httpClient.
 		SetTimeout(time.Duration(cfg.Timeout) * time.Second).
 		OnBeforeRequest(func(client *resty.Client, request *resty.Request) error {
-			b, e := json.Marshal(request.Body)
+			b, e := sonic.Marshal(request.Body)
 			if e != nil {
 				return e
 			}
@@ -95,7 +95,7 @@ func NewYWService(cfg config.Config) *YWClient {
 			}
 			// 解析响应体JSON
 			var responseBody ResponseBody
-			if err := json.Unmarshal(r.Body(), &responseBody); err != nil {
+			if err := sonic.Unmarshal(r.Body(), &responseBody); err != nil {
 				text += fmt.Sprintf(", error: %s", string(r.Body()))
 				YWClient.logger.Debugf("Retry request: %s", text)
 				return true // 如果解析错误则重试

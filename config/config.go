@@ -2,7 +2,7 @@ package config
 
 type Config struct {
 	APIKey   string
-	Apitoken string
+	ApiToken string
 	Debug    bool // 是否启用调试模式
 	Sandbox  bool // 是否为沙箱环境
 	Timeout  int  // HTTP 超时设定（单位：秒）
@@ -11,7 +11,7 @@ type Config struct {
 func LoadConfig() *Config {
 	return &Config{
 		APIKey:   "ITC0893791",
-		Apitoken: "axzc2utvPbfc9UbJDOh+7w==",
+		ApiToken: "axzc2utvPbfc9UbJDOh+7w==",
 		Debug:    true,
 		Sandbox:  true,
 		Timeout:  360,

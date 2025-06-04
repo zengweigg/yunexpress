@@ -15,19 +15,19 @@ type service struct {
 
 type services struct {
 	XiaoBao xiaoBaoService
-	//Gts  gtsService
-	//Icms icmsService
-	//Icsm icsmService
+	// Gts  gtsService
+	// Icms icmsService
+	// Icsm icsmService
 }
 
 // GetSign MD5加密
 func GetSign(text string) string {
 	// 创建一个 md5 哈希对象
-	hasher := md5.New()
+	hash := md5.New()
 	// 将输入字符串写入哈希对象
-	hasher.Write([]byte(text))
+	hash.Write([]byte(text))
 	// 计算哈希值
-	hashBytes := hasher.Sum(nil)
+	hashBytes := hash.Sum(nil)
 	// 将哈希值转换为十六进制字符串
 	hashStr := hex.EncodeToString(hashBytes)
 	return hashStr
