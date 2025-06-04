@@ -27,12 +27,12 @@ func NewYWService(cfg config.Config) *YWClient {
 		config: &cfg,
 		logger: createLogger(),
 	}
-	//OnBeforeRequest：设置请求发送前的钩子函数，允许在请求发送之前对请求进行修改或添加逻辑。
-	//OnAfterResponse：设置响应接收后的钩子函数，允许在接收到响应后处理响应数据或执行其他逻辑。
-	//SetRetryCount：设置请求失败时的最大重试次数。
-	//SetRetryWaitTime：设置每次重试之间的等待时间（最小等待时间）。
-	//SetRetryMaxWaitTime：设置每次重试之间的最大等待时间，实际等待时间会在最小和最大等待时间之间随机选取。
-	//AddRetryCondition：添加自定义的重试条件，当满足该条件时触发重试机制。
+	// OnBeforeRequest：设置请求发送前的钩子函数，允许在请求发送之前对请求进行修改或添加逻辑。
+	// OnAfterResponse：设置响应接收后的钩子函数，允许在接收到响应后处理响应数据或执行其他逻辑。
+	// SetRetryCount：设置请求失败时的最大重试次数。
+	// SetRetryWaitTime：设置每次重试之间的等待时间（最小等待时间）。
+	// SetRetryMaxWaitTime：设置每次重试之间的最大等待时间，实际等待时间会在最小和最大等待时间之间随机选取。
+	// AddRetryCondition：添加自定义的重试条件，当满足该条件时触发重试机制。
 	httpClient := resty.
 		New().
 		SetDebug(YWClient.config.Debug).
@@ -42,8 +42,10 @@ func NewYWService(cfg config.Config) *YWClient {
 			"User-Agent":   userAgent,
 		})
 	if cfg.Sandbox {
+		// 测试
 		httpClient.SetBaseURL("http://omsapi.uat.yunexpress.com")
 	} else {
+		// 正式
 		httpClient.SetBaseURL("http://oms.api.yunexpress.com")
 	}
 	httpClient.
@@ -115,9 +117,9 @@ func NewYWService(cfg config.Config) *YWClient {
 	}
 	YWClient.Services = services{
 		XiaoBao: (xiaoBaoService)(xService), // 小包专线
-		//Gts:  (gtsService)(xService),  // 通用查询
-		//Icms: (icmsService)(xService), // 国际区划
-		//Icsm: (icsmService)(xService), // 关务发票
+		// Gts:  (gtsService)(xService),  // 通用查询
+		// Icms: (icmsService)(xService), // 国际区划
+		// Icsm: (icsmService)(xService), // 关务发票
 	}
 	return YWClient
 }
