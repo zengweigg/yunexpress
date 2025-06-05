@@ -99,10 +99,9 @@ func NewYunService(cfg config.Config) *YunClient {
 		httpClient: YunClient.httpClient,
 	}
 	YunClient.Services = services{
-		Base: (baseService)(xService), // 基础通用
-		// Gts:  (gtsService)(xService),  // 通用查询
-		// Icms: (icmsService)(xService), // 国际区划
-		// Icsm: (icsmService)(xService), // 关务发票
+		Base:  (baseService)(xService),  // 基础通用
+		Order: (orderService)(xService), // 订单
+		Track: (trackService)(xService), // 追踪
 	}
 	return YunClient
 }
