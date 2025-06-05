@@ -27,6 +27,11 @@ func NewYWService(cfg config.Config) *YWClient {
 		config: &cfg,
 		logger: createLogger(),
 	}
+
+	token, err := GetToken(cfg.APIKey, cfg.APISecret)
+	if err != nil {
+		panic(err)
+	}
 	// OnBeforeRequest：设置请求发送前的钩子函数，允许在请求发送之前对请求进行修改或添加逻辑。
 	// OnAfterResponse：设置响应接收后的钩子函数，允许在接收到响应后处理响应数据或执行其他逻辑。
 	// SetRetryCount：设置请求失败时的最大重试次数。
@@ -37,9 +42,10 @@ func NewYWService(cfg config.Config) *YWClient {
 		New().
 		SetDebug(YWClient.config.Debug).
 		SetHeaders(map[string]string{
-			"Content-Type": "application/json",
-			"Accept":       "application/json",
-			"User-Agent":   userAgent,
+			"Content-Type":  "application/json",
+			"Accept":        "application/json",
+			"User-Agent":    userAgent,
+			"Authorization": token,
 		})
 	if cfg.Sandbox {
 		// 测试
