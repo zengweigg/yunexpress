@@ -6,7 +6,6 @@ import (
 	"github.com/go-resty/resty/v2"
 	"github.com/zengweigg/yunexpress/config"
 	"net/http"
-	"strconv"
 	"time"
 )
 
@@ -15,15 +14,15 @@ const (
 	userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36"
 )
 
-type YWClient struct {
+type YunClient struct {
 	config     *config.Config
 	httpClient *resty.Client
 	logger     Logger   // Logger
 	Services   services // API Services
 }
 
-func NewYWService(cfg config.Config) *YWClient {
-	YWClient := &YWClient{
+func NewYWService(cfg config.Config) *YunClient {
+	YunClient := &YunClient{
 		config: &cfg,
 		logger: createLogger(),
 	}
@@ -40,7 +39,7 @@ func NewYWService(cfg config.Config) *YWClient {
 	// AddRetryCondition：添加自定义的重试条件，当满足该条件时触发重试机制。
 	httpClient := resty.
 		New().
-		SetDebug(YWClient.config.Debug).
+		SetDebug(YunClient.config.Debug).
 		SetHeaders(map[string]string{
 			"Content-Type":  "application/json",
 			"Accept":        "application/json",
@@ -56,27 +55,6 @@ func NewYWService(cfg config.Config) *YWClient {
 	}
 	httpClient.
 		SetTimeout(time.Duration(cfg.Timeout) * time.Second).
-		OnBeforeRequest(func(client *resty.Client, request *resty.Request) error {
-			b, e := sonic.Marshal(request.Body)
-			if e != nil {
-				return e
-			}
-			bStr := string(b)
-			timestamp := strconv.FormatInt(time.Now().UnixMicro(), 10)
-			method := request.URL
-			text := cfg.Apitoken + cfg.APIKey + bStr + "json" + method + timestamp + "V1.0" + cfg.Apitoken
-			sign := GetSign(text)
-			request.URL = ""
-			request.SetQueryParams(map[string]string{
-				"user_id":   cfg.APIKey,
-				"method":    method,
-				"format":    "json",
-				"timestamp": timestamp,
-				"sign":      sign,
-				"version":   "V1.0",
-			})
-			return nil
-		}).
 		SetRetryCount(2).
 		SetRetryWaitTime(5 * time.Second).
 		SetRetryMaxWaitTime(10 * time.Second).
@@ -87,13 +65,13 @@ func NewYWService(cfg config.Config) *YWClient {
 			}
 			if err != nil {
 				text += fmt.Sprintf(", error: %s", err.Error())
-				YWClient.logger.Debugf("Retry request: %s", text)
+				YunClient.logger.Debugf("Retry request: %s", text)
 				return true // 如果有错误则重试
 			}
 			// 检查响应状态码是否不是200
 			if r.StatusCode() != http.StatusOK {
 				text += fmt.Sprintf(", error: %d", r.StatusCode())
-				YWClient.logger.Debugf("Retry request: %s", text)
+				YunClient.logger.Debugf("Retry request: %s", text)
 				return true
 			}
 			type ResponseBody struct {
@@ -103,29 +81,29 @@ func NewYWService(cfg config.Config) *YWClient {
 			var responseBody ResponseBody
 			if err := sonic.Unmarshal(r.Body(), &responseBody); err != nil {
 				text += fmt.Sprintf(", error: %s", string(r.Body()))
-				YWClient.logger.Debugf("Retry request: %s", text)
+				YunClient.logger.Debugf("Retry request: %s", text)
 				return true // 如果解析错误则重试
 			}
 
 			// 检查apiResultCode字段是否不是0
 			if responseBody.Code != 0 {
 				text += fmt.Sprintf(", error: %d", responseBody.Code)
-				YWClient.logger.Debugf("Retry request: %s", text)
+				YunClient.logger.Debugf("Retry request: %s", text)
 				return true
 			}
 			return false
 		})
-	YWClient.httpClient = httpClient
+	YunClient.httpClient = httpClient
 	xService := service{
 		config:     &cfg,
-		logger:     YWClient.logger,
-		httpClient: YWClient.httpClient,
+		logger:     YunClient.logger,
+		httpClient: YunClient.httpClient,
 	}
-	YWClient.Services = services{
+	YunClient.Services = services{
 		XiaoBao: (xiaoBaoService)(xService), // 小包专线
 		// Gts:  (gtsService)(xService),  // 通用查询
 		// Icms: (icmsService)(xService), // 国际区划
 		// Icsm: (icsmService)(xService), // 关务发票
 	}
-	return YWClient
+	return YunClient
 }
