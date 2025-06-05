@@ -48,10 +48,10 @@ func NewYunService(cfg config.Config) *YunClient {
 		})
 	if cfg.Sandbox {
 		// 测试
-		httpClient.SetBaseURL("http://omsapi.uat.yunexpress.com")
+		httpClient.SetBaseURL("http://omsapi.uat.yunexpress.com/api/")
 	} else {
 		// 正式
-		httpClient.SetBaseURL("http://oms.api.yunexpress.com")
+		httpClient.SetBaseURL("http://oms.api.yunexpress.com/api/")
 	}
 	httpClient.
 		SetTimeout(time.Duration(cfg.Timeout) * time.Second).
@@ -75,7 +75,7 @@ func NewYunService(cfg config.Config) *YunClient {
 				return true
 			}
 			type ResponseBody struct {
-				Code int `json:"apiResultCode"`
+				Code string `json:"Code"`
 			}
 			// 解析响应体JSON
 			var responseBody ResponseBody
@@ -84,10 +84,9 @@ func NewYunService(cfg config.Config) *YunClient {
 				YunClient.logger.Debugf("Retry request: %s", text)
 				return true // 如果解析错误则重试
 			}
-
 			// 检查apiResultCode字段是否不是0
-			if responseBody.Code != 0 {
-				text += fmt.Sprintf(", error: %d", responseBody.Code)
+			if responseBody.Code != "0000" {
+				text += fmt.Sprintf(", error: %s", responseBody.Code)
 				YunClient.logger.Debugf("Retry request: %s", text)
 				return true
 			}
@@ -100,7 +99,7 @@ func NewYunService(cfg config.Config) *YunClient {
 		httpClient: YunClient.httpClient,
 	}
 	YunClient.Services = services{
-		XiaoBao: (xiaoBaoService)(xService), // 小包专线
+		Base: (baseService)(xService), // 基础通用
 		// Gts:  (gtsService)(xService),  // 通用查询
 		// Icms: (icmsService)(xService), // 国际区划
 		// Icsm: (icsmService)(xService), // 关务发票
