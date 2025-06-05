@@ -11,15 +11,15 @@ import (
 func Test001(m *testing.T) {
 	// 初始化
 	cfg := config.LoadConfig()
-	ywClient := NewYWService(*cfg)
-	//构造测试请求数据
-	//postData := model.YWBlank{}
-	//resp, err := ywClient.Services.XiaoBao.QueryCountryList(postData)
-	//if err != nil {
+	ywClient := NewYunService(*cfg)
+	// 构造测试请求数据
+	// postData := model.YWBlank{}
+	// resp, err := ywClient.Services.XiaoBao.QueryCountryList(postData)
+	// if err != nil {
 	//	fmt.Printf("Error: %v\n", err)
 	//	return
-	//}
-	//fmt.Println("666", resp.YWApiResponse, resp.Code, resp.Data, resp.Msg, resp.Success)
+	// }
+	// fmt.Println("666", resp.YWApiResponse, resp.Code, resp.Data, resp.Msg, resp.Success)
 	receiverInfo := model.ReceiverInfo{
 		Name:        "glassware",
 		Phone:       "18231730588",

@@ -21,7 +21,7 @@ type YunClient struct {
 	Services   services // API Services
 }
 
-func NewYWService(cfg config.Config) *YunClient {
+func NewYunService(cfg config.Config) *YunClient {
 	YunClient := &YunClient{
 		config: &cfg,
 		logger: createLogger(),
