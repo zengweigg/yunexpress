@@ -7,7 +7,7 @@ import (
 )
 
 func Test001(m *testing.T) {
-	// 初始化
+	// 初始化 111
 	cfg := config.LoadConfig()
 	yunClient := NewYunService(*cfg)
 	// 测试1
