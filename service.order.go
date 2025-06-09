@@ -12,8 +12,10 @@ type orderService service
 func (s orderService) CreateOrder(reqData model.YunOrderPost) (model.YunOrderResp, error) {
 	respData := model.YunOrderResp{}
 	// 请求数据
+	datas := make([]model.YunOrderPost, 0)
+	datas = append(datas, reqData)
 	resp, err := s.httpClient.R().
-		SetBody(reqData).
+		SetBody(datas).
 		Post("WayBill/CreateOrder")
 	if err != nil {
 		return respData, err
