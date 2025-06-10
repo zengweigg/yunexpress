@@ -137,7 +137,7 @@ type ShipperBoxs struct {
 
 type YunOrderResp struct {
 	YunApiResponse
-	Item OrderResponse `json:"Item"`
+	Item []OrderResponse `json:"Item"`
 }
 
 type OrderDetail struct {
