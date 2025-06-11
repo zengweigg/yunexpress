@@ -250,7 +250,7 @@ type YunInterceptOrderResp struct {
 }
 
 type YunPrintLabelPost struct {
-	OrderNumbers string `json:"OrderNumbers"` // 物流系统运单号，客户订单或跟踪号
+	OrderNumbers []string `json:"OrderNumbers"` // 物流系统运单号，客户订单或跟踪号
 }
 
 type OrderLabelPrint struct {

@@ -107,8 +107,9 @@ func (s orderService) InterceptOrder(reqData model.YunInterceptOrderPost) (model
 func (s orderService) PrintLabel(reqData model.YunPrintLabelPost) (model.YunPrintLabelResp, error) {
 	respData := model.YunPrintLabelResp{}
 	// 请求数据
+	jsonData, err := sonic.Marshal(reqData.OrderNumbers)
 	resp, err := s.httpClient.R().
-		SetBody(reqData).
+		SetBody(string(jsonData)).
 		Post("Label/Print")
 	if err != nil {
 		return respData, err
